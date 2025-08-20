@@ -1,6 +1,9 @@
 # qwertyCode — мощный веб-интерпретатор HTML, CSS, JS
 # https://qwzxc-alt.github.io/qwertyCode/
-https://img.shields.io/badge/qwertyCode-v2.0-blue
+![qwertyCode Version](https://img.shields.io/badge/qwertyCode-v2.0-blue)
+![GitHub last commit](https://img.shields.io/github/last-commit/username/qwertycode)
+![GitHub issues](https://img.shields.io/github/issues/username/qwertycode)
+![GitHub stars](https://img.shields.io/github/stars/username/qwertycode?style=social)
 qwertyCode — продвинутый веб интерпретатор с возможностью скачивания, тестирования своих проектов прямо в браузере!
 Интерфейс на русском языке, дружелюбный к новичкам, темная тема, приятная для глаз
 
