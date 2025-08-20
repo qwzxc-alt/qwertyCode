@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /search/
+Disallow: /private/
+
+Sitemap: https://qwzxc-alt.github.io/qwertyCode/sitemap.xml
+
+# Скорость сканирования (запросов в секунду)
+Crawl-delay: 1
