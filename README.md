@@ -4,6 +4,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/qwzxc-alt/qwertycode)
 ![GitHub issues](https://img.shields.io/github/issues/qwzxc-alt/qwertycode)
 ![GitHub stars](https://img.shields.io/github/stars/qwzxc-alt/qwertycode?style=social)
+
 qwertyCode — продвинутый веб интерпретатор с возможностью скачивания, тестирования своих проектов прямо в браузере!
 Интерфейс на русском языке, дружелюбный к новичкам, темная тема, приятная для глаз
 
