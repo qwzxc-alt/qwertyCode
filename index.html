@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>qwertyCode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/nord-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/comment/comment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldgutter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/brace-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/xml-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/indent-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/comment-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/searchcursor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/dialog/dialog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3d3d3d;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #6e45e2;
+            --accent-light: #8c6bec;
+            --accent-dark: #5835b5;
+            --border: #404040;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+            --info: #2196f3;
+            --editor-bg: #2d2d2d;
+            --editor-gutter: #333;
+            --editor-active-line: #343434;
+            --header-height: 60px;
+            --footer-height: 35px;
+            --panel-header-height: 45px;
+            --transition: all 0.3s ease;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Заголовок */
+        header {
+            background-color: var(--bg-secondary);
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.6rem;
+            color: var(--accent-light);
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo i {
+            margin-right: 12px;
+            font-size: 2rem;
+            color: var(--accent-light);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-light);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #3d8b40;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background-color: #e68900;
+        }
+
+        .btn-error {
+            background-color: var(--error);
+        }
+
+        .btn-error:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-info {
+            background-color: var(--info);
+        }
+
+        .btn-info:hover {
+            background-color: #0b7dda;
+        }
+
+        /* Основной контейнер */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Контейнер редакторов */
+        .editors-container {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            height: 100%;
+            border-right: 1px solid var(--border);
+            background-color: var(--bg-secondary);
+        }
+
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            height: 33.333%;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .editor-panel:last-child {
+            border-bottom: none;
+        }
+
+        .editor-panel.maximized {
+            height: 100%;
+            z-index: 50;
+        }
+
+        .editor-panel.minimized {
+            height: var(--panel-header-height);
+        }
+
+        .editor-panel.minimized .editor {
+            display: none;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            height: var(--panel-header-height);
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .panel-header:hover {
+            background-color: #454545;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .panel-title i {
+            font-size: 1.3rem;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .panel-action {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .panel-action:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-secondary);
+        }
+
+        .editor {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .CodeMirror {
+            height: 100%;
+            font-size: 15px;
+            background-color: var(--editor-bg);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .CodeMirror-gutters {
+            background-color: var(--editor-gutter);
+            border-right: 1px solid var(--border);
+        }
+
+        .CodeMirror-linenumber {
+            color: var(--text-secondary);
+        }
+
+        .CodeMirror-activeline-background {
+            background-color: var(--editor-active-line);
+        }
+
+        /* Контейнер предпросмотра */
+        .preview-container {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-secondary);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            height: var(--panel-header-height);
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .preview {
+            flex: 1;
+            background-color: white;
+            border: none;
+            transition: var(--transition);
+        }
+
+        /* Разделитель */
+        .resizer {
+            width: 12px;
+            background-color: var(--bg-tertiary);
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            position: relative;
+            z-index: 10;
+        }
+
+        .resizer:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .resizer i {
+            transform: rotate(90deg);
+        }
+
+        /* Подвал */
+        footer {
+            height: var(--footer-height);
+            background-color: var(--bg-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .status-indicator.error {
+            background-color: var(--error);
+            box-shadow: 0 0 8px var(--error);
+        }
+
+        .status-indicator.warning {
+            background-color: var(--warning);
+            box-shadow: 0 0 8px var(--warning);
+        }
+
+        .version {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .version a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .version a:hover {
+            color: var(--accent-light);
+        }
+
+        /* Меню загрузки */
+        .download-menu {
+            position: absolute;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 10px 0;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            min-width: 220px;
+            box-shadow: var(--shadow-hover);
+            transform: translateY(10px);
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .download-menu.show {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .download-option {
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .download-option:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .download-option i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Уведомления */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 16px 22px;
+            background-color: var(--success);
+            color: white;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-hover);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-error {
+            background-color: var(--error);
+        }
+
+        .toast-warning {
+            background-color: var(--warning);
+            color: #333;
+        }
+
+        .toast-info {
+            background-color: var(--info);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-secondary);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 140px);
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Настройки */
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-title {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .settings-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .settings-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .settings-control select,
+        .settings-control input {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            min-width: 150px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-secondary);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Консоль */
+        .console-panel {
+            background-color: var(--editor-bg);
+            border-top: 1px solid var(--border);
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .console-panel.collapsed {
+            height: 40px;
+        }
+
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            height: 40px;
+            background-color: var(--bg-tertiary);
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .console-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .console-message {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .console-log {
+            color: var(--text-primary);
+        }
+
+        .console-error {
+            color: var(--error);
+        }
+
+        .console-warn {
+            color: var(--warning);
+        }
+
+        .console-info {
+            color: var(--info);
+        }
+
+        .console-clear {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .console-clear:hover {
+            color: var(--text-primary);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .editors-container {
+                width: 100%;
+                height: 50%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .preview-container {
+                width: 100%;
+                height: 50%;
+            }
+
+            .resizer {
+                width: 100%;
+                height: 12px;
+                cursor: row-resize;
+            }
+
+            .resizer i {
+                transform: rotate(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0 15px;
+                flex-wrap: wrap;
+                height: auto;
+                min-height: var(--header-height);
+                padding: 10px;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+
+            .controls {
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            footer {
+                padding: 0 15px;
+                flex-direction: column;
+                height: auto;
+                padding: 8px;
+                gap: 8px;
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease;
+        }
+
+        /* Дополнительные стили для улучшения UX */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 10px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .highlight {
+            background-color: rgba(110, 69, 226, 0.2);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .keyboard-shortcut {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-code"></i>
+            <span>qwertyCode</span>
+        </div>
+        <div class="controls">
+            <button class="btn btn-primary" id="run-btn" data-tooltip="Выполнить код">
+                <i class="fas fa-play"></i>
+                <span>Выполнить</span>
+                <span class="keyboard-shortcut">Ctrl+Enter</span>
+            </button>
+            <button class="btn" id="download-btn" data-tooltip="Скачать проект">
+                <i class="fas fa-download"></i>
+                <span>Скачать</span>
+            </button>
+            <div class="download-menu" id="download-menu">
+                <div class="download-option" data-type="html">
+                    <i class="fas fa-file-code"></i>
+                    <span>Скачать HTML</span>
+                </div>
+                <div class="download-option" data-type="css">
+                    <i class="fas fa-file-code"></i>
+                    <span>Скачать CSS</span>
+                </div>
+                <div class="download-option" data-type="js">
+                    <i class="fas fa-file-code"></i>
+                    <span>Скачать JavaScript</span>
+                </div>
+                <div class="download-option" data-type="zip">
+                    <i class="fas fa-file-archive"></i>
+                    <span>Скачать ZIP архив</span>
+                </div>
+                <div class="download-option" data-type="screenshot">
+                    <i class="fas fa-camera"></i>
+                    <span>Сделать скриншот</span>
+                </div>
+            </div>
+            <button class="btn" id="save-btn" data-tooltip="Сохранить в браузере">
+                <i class="fas fa-save"></i>
+                <span>Сохранить</span>
+            </button>
+            <button class="btn" id="settings-btn" data-tooltip="Настройки редактора">
+                <i class="fas fa-cog"></i>
+                <span>Настройки</span>
+            </button>
+            <button class="btn btn-error" id="reset-btn" data-tooltip="Сбросить всё">
+                <i class="fas fa-trash"></i>
+                <span>Сбросить</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="editors-container">
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fab fa-html5" style="color: #e34f26;"></i>
+                        <span>HTML</span>
+                    </div>
+                    <div class="panel-actions">
+                        <button class="panel-action" title="Форматировать HTML" data-tooltip="Форматировать">
+                            <i class="fas fa-indent"></i>
+                        </button>
+                        <button class="panel-action" title="Свернуть/развернуть" data-tooltip="Свернуть/развернуть">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor" id="html-editor"></div>
+            </div>
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fab fa-css3-alt" style="color: #264de4;"></i>
+                        <span>CSS</span>
+                    </div>
+                    <div class="panel-actions">
+                        <button class="panel-action" title="Форматировать CSS" data-tooltip="Форматировать">
+                            <i class="fas fa-indent"></i>
+                        </button>
+                        <button class="panel-action" title="Свернуть/развернуть" data-tooltip="Свернуть/развернуть">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor" id="css-editor"></div>
+            </div>
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fab fa-js-square" style="color: #f7df1e;"></i>
+                        <span>JavaScript</span>
+                    </div>
+                    <div class="panel-actions">
+                        <button class="panel-action" title="Форматировать JavaScript" data-tooltip="Форматировать">
+                            <i class="fas fa-indent"></i>
+                        </button>
+                        <button class="panel-action" title="Свернуть/развернуть" data-tooltip="Свернуть/развернуть">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor" id="js-editor"></div>
+            </div>
+        </div>
+
+        <div class="resizer" id="resizer">
+            <i class="fas fa-grip-lines"></i>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                <div class="panel-title">
+                    <i class="fas fa-eye"></i>
+                    <span>Результат</span>
+                </div>
+                <div class="preview-actions">
+                    <button class="panel-action" title="Обновить результат" id="refresh-btn" data-tooltip="Обновить">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="panel-action" title="Открыть в новом окне" id="open-new-btn" data-tooltip="Новое окно">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                    <button class="panel-action" title="Сбросить результат" id="reset-preview-btn" data-tooltip="Сбросить">
+                        <i class="fas fa-ban"></i>
+                    </button>
+                </div>
+            </div>
+            <iframe class="preview" id="preview-frame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"></iframe>
+        </div>
+    </div>
+
+    <div class="console-panel" id="console-panel">
+        <div class="console-header">
+            <div class="panel-title">
+                <i class="fas fa-terminal"></i>
+                <span>Консоль</span>
+            </div>
+            <div class="panel-actions">
+                <button class="console-clear" title="Очистить консоль" id="clear-console-btn" data-tooltip="Очистить">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="panel-action" title="Свернуть/развернуть консоль" id="toggle-console-btn" data-tooltip="Свернуть/развернуть">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+        <div class="console-content" id="console-output"></div>
+    </div>
+
+    <footer>
+        <div class="status">
+            <div class="status-indicator" id="status-indicator"></div>
+            <span id="status-text">Готов</span>
+        </div>
+        <div class="version">
+            <span>qwertyCode v2.0</span>
+            <a href="#" id="help-btn" data-tooltip="Помощь"><i class="fas fa-question-circle"></i></a>
+            <a href="#" id="theme-btn" data-tooltip="Сменить тему"><i class="fas fa-moon"></i></a>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Успешно выполнено!</span>
+    </div>
+
+    <!-- Модальное окно настроек -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Настройки редактора</h2>
+                <button class="modal-close" id="settings-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <h3 class="settings-title">Внешний вид</h3>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Тема редактора</span>
+                            <span class="settings-description">Выберите цветовую схему редактора кода</span>
+                        </div>
+                        <div class="settings-control">
+                            <select id="editor-theme">
+                                <option value="dracula">Dracula</option>
+                                <option value="monokai">Monokai</option>
+                                <option value="material-darker">Material Darker</option>
+                                <option value="nord-dark">Nord Dark</option>
+                                <option value="default">Default</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Размер шрифта</span>
+                            <span class="settings-description">Размер шрифта в редакторе кода</span>
+                        </div>
+                        <div class="settings-control">
+                            <input type="number" id="font-size" min="10" max="24" value="15">
+                        </div>
+                    </div>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Автодополнение</span>
+                            <span class="settings-description">Включить подсказки при наборе кода</span>
+                        </div>
+                        <div class="settings-control">
+                            <label class="switch">
+                                <input type="checkbox" id="auto-completion" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h3 class="settings-title">Поведение</h3>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Автосохранение</span>
+                            <span class="settings-description">Автоматически сохранять код при изменении</span>
+                        </div>
+                        <div class="settings-control">
+                            <label class="switch">
+                                <input type="checkbox" id="auto-save" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Линия курсора</span>
+                            <span class="settings-description">Подсвечивать текущую строку</span>
+                        </div>
+                        <div class="settings-control">
+                            <label class="switch">
+                                <input type="checkbox" id="active-line" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Номера строк</span>
+                            <span class="settings-description">Показывать номера строк в редакторе</span>
+                        </div>
+                        <div class="settings-control">
+                            <label class="switch">
+                                <input type="checkbox" id="line-numbers" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Сворачивание кода</span>
+                            <span class="settings-description">Включить возможность сворачивания блоков кода</span>
+                        </div>
+                        <div class="settings-control">
+                            <label class="switch">
+                                <input type="checkbox" id="code-folding" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="settings-cancel">Отмена</button>
+                <button class="btn btn-primary" id="settings-save">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно помощи -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Помощь по qwertyCode</h2>
+                <button class="modal-close" id="help-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <h3 class="settings-title">Основные возможности</h3>
+                    <p>qwertyCode - это мощный веб-интерпретатор для HTML, CSS и JavaScript, который работает прямо в вашем браузере.</p>
+                    
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Быстрые клавиши</span>
+                            <span class="settings-description">
+                                <ul>
+                                    <li>Ctrl+Enter - Выполнить код</li>
+                                    <li>Ctrl+S - Сохранить проект</li>
+                                    <li>Ctrl+Shift+S - Скачать проект</li>
+                                    <li>Ctrl+1,2,3 - Переключение между редакторами</li>
+                                    <li>Ctrl+/ - Закомментировать/раскомментировать</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="settings-label">
+                            <span>Советы по использованию</span>
+                            <span class="settings-description">
+                                <ul>
+                                    <li>Используйте кнопку "Развернуть" для фокусировки на одном редакторе</li>
+                                    <li>Дважды щелкните на разделителе, чтобы сбросить размер панелей</li>
+                                    <li>Консоль отображает ошибки и предупреждения вашего кода</li>
+                                    <li>Вы можете делать скриншоты результата</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="help-ok">Понятно</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация редакторов кода
+            const htmlEditor = CodeMirror(document.getElementById('html-editor'), {
+                mode: 'htmlmixed',
+                theme: 'dracula',
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseTags: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                extraKeys: {
+                    "Ctrl-/": "toggleComment",
+                    "Ctrl-S": function() { saveToLocalStorage(); },
+                    "Ctrl-Enter": function() { updatePreview(); },
+                    "Ctrl-1": function() { switchEditor('html'); },
+                    "Ctrl-2": function() { switchEditor('css'); },
+                    "Ctrl-3": function() { switchEditor('js'); }
+                },
+                value: `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>qwertyCode Пример</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #6e45e2, #88d3ce);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #6e45e2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #6e45e2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover {
+            background: #8c6bec;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .code-example {
+            background: #f8f9fa;
+            border-left: 4px solid #6e45e2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            flex: 1;
+            min-width: 200px;
+            background: #f0f2f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature i {
+            font-size: 2rem;
+            color: #6e45e2;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Добро пожаловать в qwertyCode!</h1>
+        
+        <div class="card">
+            <p>Это пример HTML-кода. Попробуйте изменить его и посмотреть на результат в реальном времени!</p>
+            <p>qwertyCode - это мощный редактор для веб-разработки, который работает прямо в вашем браузере.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Быстрый</h3>
+                    <p>Мгновенное обновление предпросмотра</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-download"></i>
+                    <h3>Экспорт</h3>
+                    <p>Скачивайте ваши проекты в один клик</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-moon"></i>
+                    <h3>Тёмная тема</h3>
+                    <p>Приятная для глаз тёмная тема</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <p>Попробуйте нажать на кнопку ниже, чтобы увидеть JavaScript в действии:</p>
+            <button class="btn" onclick="showMessage()">Нажми меня</button>
+            <div class="code-example">
+                function showMessage() {<br>
+                &nbsp;&nbsp;document.getElementById('output').innerHTML = 'Привет! Вы нажали на кнопку в ' + new Date().toLocaleTimeString();<br>
+                }
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Результат:</h3>
+            <p id="output">Здесь будет результат выполнения JavaScript...</p>
+        </div>
+    </div>
+
+    <script>
+        function showMessage() {
+            document.getElementById('output').innerHTML = 'Привет! Вы нажали на кнопку в ' + new Date().toLocaleTimeString();
+            
+            // Добавляем анимацию
+            const output = document.getElementById('output');
+            output.style.transition = 'all 0.3s';
+            output.style.color = '#6e45e2';
+            output.style.fontWeight = 'bold';
+            
+            setTimeout(() => {
+                output.style.color = '';
+                output.style.fontWeight = '';
+            }, 1000);
+        }
+        
+        // Анимация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease ' + (index * 0.1) + 's';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    <\/script>
+</body>
+</html>`
+            });
+
+            const cssEditor = CodeMirror(document.getElementById('css-editor'), {
+                mode: 'css',
+                theme: 'dracula',
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                extraKeys: {
+                    "Ctrl-/": "toggleComment",
+                    "Ctrl-S": function() { saveToLocalStorage(); },
+                    "Ctrl-Enter": function() { updatePreview(); }
+                },
+                value: `/* Добавьте свои стили CSS здесь */
+        
+.container {
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6e45e2, #88d3ce);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    20% {
+        transform: scale(50, 50);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(100, 100);
+        opacity: 0;
+    }
+}
+
+.feature {
+    transition: all 0.3s ease;
+}
+
+.feature:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.code-example {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    border-left: 4px solid #6e45e2;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    overflow-x: auto;
+}
+
+.code-example::-webkit-scrollbar {
+    height: 8px;
+}
+
+.code-example::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.code-example::-webkit-scrollbar-thumb {
+    background: #6e45e2;
+    border-radius: 4px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .features {
+        flex-direction: column;
+    }
+    
+    .feature {
+        min-width: auto;
+    }
+}`
+            });
+
+            const jsEditor = CodeMirror(document.getElementById('js-editor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                extraKeys: {
+                    "Ctrl-/": "toggleComment",
+                    "Ctrl-S": function() { saveToLocalStorage(); },
+                    "Ctrl-Enter": function() { updatePreview(); },
+                    "Ctrl-I": function() { formatCode(); }
+                },
+                value: `// Добавьте ваш JavaScript код здесь
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('qwertyCode готов к работе!');
+    
+    // Анимация для карточек
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = (index * 0.2) + 's';
+    });
+    
+    // Инициализация дополнительных функций
+    initFeatures();
+});
+
+// Основные функции
+function initFeatures() {
+    // Добавляем обработчики событий для улучшения UX
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            // Эффект пульсации
+            const x = e.clientX - e.target.offsetLeft;
+            const y = e.clientY - e.target.offsetTop;
+            
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple-effect');
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+    
+    console.log('Функции инициализированы');
+}
+
+// Пример полезных утилит
+const utils = {
+    // Форматирование даты
+    formatDate: function(date) {
+        return new Date(date).toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    },
+    
+    // Генератор случайного числа
+    randomInt: function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    
+    // Проверка на мобильное устройство
+    isMobile: function() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+};
+
+// Демонстрация работы утилит
+console.log('Текущая дата:', utils.formatDate(new Date()));
+console.log('Случайное число:', utils.randomInt(1, 100));
+console.log('Мобильное устройство:', utils.isMobile());
+
+// Работа с локальным хранилищем
+const storage = {
+    set: function(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch (e) {
+            console.error('Ошибка сохранения:', e);
+            return false;
+        }
+    },
+    
+    get: function(key) {
+        try {
+            return JSON.parse(localStorage.getItem(key));
+        } catch (e) {
+            console.error('Ошибка чтения:', e);
+            return null;
+        }
+    },
+    
+    remove: function(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.error('Ошибка удаления:', e);
+            return false;
+        }
+    }
+};
+
+// Пример асинхронной функции
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Ошибка сети');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Не удалось загрузить данные:', error);
+        return null;
+    }
+}
+
+// Использование асинхронной функции
+/*
+fetchData('https://api.example.com/data')
+    .then(data => {
+        if (data) {
+            console.log('Данные получены:', data);
+        }
+    });
+*/
+
+// Дополнительные функции для демонстрации
+function calculate(a, b, operator = '+') {
+    const operations = {
+        '+': (a, b) => a + b,
+        '-': (a, b) => a - b,
+        '*': (a, b) => a * b,
+        '/': (a, b) => a / b
+    };
+    
+    return operations[operator] ? operations[operator](a, b) : NaN;
+}
+
+// Пример использования
+const result = calculate(10, 5, '*');
+console.log('Результат вычисления 10 * 5 =', result);`
+            });
+
+            // Элементы DOM
+            const runBtn = document.getElementById('run-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const downloadMenu = document.getElementById('download-menu');
+            const saveBtn = document.getElementById('save-btn');
+            const settingsBtn = document.getElementById('settings-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const openNewBtn = document.getElementById('open-new-btn');
+            const resetPreviewBtn = document.getElementById('reset-preview-btn');
+            const previewFrame = document.getElementById('preview-frame');
+            const resizer = document.getElementById('resizer');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            const consolePanel = document.getElementById('console-panel');
+            const consoleOutput = document.getElementById('console-output');
+            const clearConsoleBtn = document.getElementById('clear-console-btn');
+            const toggleConsoleBtn = document.getElementById('toggle-console-btn');
+            const helpBtn = document.getElementById('help-btn');
+            const themeBtn = document.getElementById('theme-btn');
+            
+            // Модальные окна
+            const settingsModal = document.getElementById('settings-modal');
+            const settingsClose = document.getElementById('settings-close');
+            const settingsCancel = document.getElementById('settings-cancel');
+            const settingsSave = document.getElementById('settings-save');
+            const helpModal = document.getElementById('help-modal');
+            const helpClose = document.getElementById('help-close');
+            const helpOk = document.getElementById('help-ok');
+            
+            // Настройки
+            const editorTheme = document.getElementById('editor-theme');
+            const fontSize = document.getElementById('font-size');
+            const autoCompletion = document.getElementById('auto-completion');
+            const autoSave = document.getElementById('auto-save');
+            const activeLine = document.getElementById('active-line');
+            const lineNumbers = document.getElementById('line-numbers');
+            const codeFolding = document.getElementById('code-folding');
+            
+            // Переменные состояния
+            let isResizing = false;
+            let consoleCollapsed = false;
+            let currentSettings = {};
+            let updateTimeout;
+            
+            // Инициализация
+            function init() {
+                loadSettings();
+                loadFromLocalStorage();
+                updatePreview();
+                bindEvents();
+                
+                // Инициализация подсказок
+                initTooltips();
+                
+                // Запуск анимации статуса
+                setStatus('ready', 'Готов');
+            }
+            
+            // Привязка событий
+            function bindEvents() {
+                runBtn.addEventListener('click', updatePreview);
+                
+                downloadBtn.addEventListener('click', function() {
+                    downloadMenu.classList.toggle('show');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!downloadBtn.contains(e.target) && !downloadMenu.contains(e.target)) {
+                        downloadMenu.classList.remove('show');
+                    }
+                });
+                
+                document.querySelectorAll('.download-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const type = this.getAttribute('data-type');
+                        handleDownload(type);
+                        downloadMenu.classList.remove('show');
+                    });
+                });
+                
+                saveBtn.addEventListener('click', function() {
+                    saveToLocalStorage();
+                    showToast('Проект сохранен в браузере', 'success');
+                });
+                
+                settingsBtn.addEventListener('click', openSettings);
+                settingsClose.addEventListener('click', closeSettings);
+                settingsCancel.addEventListener('click', closeSettings);
+                settingsSave.addEventListener('click', saveSettings);
+                
+                resetBtn.addEventListener('click', function() {
+                    if (confirm('Вы уверены, что хотите сбросить все редакторы? Все несохраненные изменения будут потеряны.')) {
+                        resetEditors();
+                        showToast('Редакторы сброшены', 'success');
+                    }
+                });
+                
+                refreshBtn.addEventListener('click', updatePreview);
+                
+                openNewBtn.addEventListener('click', openInNewWindow);
+                
+                resetPreviewBtn.addEventListener('click', function() {
+                    previewFrame.src = 'about:blank';
+                    showToast('Результат сброшен', 'info');
+                });
+                
+                // Изменение размера редакторов
+                resizer.addEventListener('mousedown', startResize);
+                document.addEventListener('mousemove', resize);
+                document.addEventListener('mouseup', stopResize);
+                
+                // Двойной клик на разделителе для сброса
+                resizer.addEventListener('dblclick', resetResizer);
+                
+                // Автообновление при изменении кода
+                htmlEditor.on('change', scheduleUpdate);
+                cssEditor.on('change', scheduleUpdate);
+                jsEditor.on('change', scheduleUpdate);
+                
+                // Консоль
+                clearConsoleBtn.addEventListener('click', clearConsole);
+                toggleConsoleBtn.addEventListener('click', toggleConsole);
+                
+                // Другие кнопки
+                helpBtn.addEventListener('click', openHelp);
+                themeBtn.addEventListener('click', toggleTheme);
+                
+                // Модальные окна
+                helpClose.addEventListener('click', closeHelp);
+                helpOk.addEventListener('click', closeHelp);
+                
+                // Глобальные горячие клавиши
+                document.addEventListener('keydown', handleKeyDown);
+                
+                // Сворачивание/разворачивание редакторов
+                document.querySelectorAll('.panel-header').forEach(header => {
+                    header.addEventListener('click', function(e) {
+                        if (!e.target.closest('.panel-actions')) {
+                            toggleEditorPanel(this.parentElement);
+                        }
+                    });
+                });
+                
+                // Кнопки действий в заголовках редакторов
+                document.querySelectorAll('.panel-action').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const action = this.querySelector('i').classList[1];
+                        const panel = this.closest('.editor-panel');
+                        
+                        if (action === 'fa-indent') {
+                            formatEditor(panel);
+                        } else if (action === 'fa-expand-alt') {
+                            toggleEditorPanel(panel);
+                        }
+                    });
+                });
+            }
+            
+            // Инициализация подсказок
+            function initTooltips() {
+                const tooltips = document.querySelectorAll('[data-tooltip]');
+                tooltips.forEach(el => {
+                    el.addEventListener('mouseenter', function() {
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip-box';
+                        tooltip.textContent = this.getAttribute('data-tooltip');
+                        document.body.appendChild(tooltip);
+                        
+                        const rect = this.getBoundingClientRect();
+                        tooltip.style.position = 'fixed';
+                        tooltip.style.top = (rect.top - 35) + 'px';
+                        tooltip.style.left = (rect.left + rect.width/2 - tooltip.offsetWidth/2) + 'px';
+                        tooltip.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            tooltip.style.opacity = '1';
+                            tooltip.style.transform = 'translateY(-5px)';
+                        }, 10);
+                        
+                        this._tooltip = tooltip;
+                    });
+                    
+                    el.addEventListener('mouseleave', function() {
+                        if (this._tooltip) {
+                            this._tooltip.remove();
+                            this._tooltip = null;
+                        }
+                    });
+                });
+            }
+            
+            // Обновление предпросмотра
+            function updatePreview() {
+                setStatus('working', 'Выполнение...');
+                
+                const htmlCode = htmlEditor.getValue();
+                const cssCode = cssEditor.getValue();
+                const jsCode = jsEditor.getValue();
+                
+                const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+                
+                try {
+                    previewDocument.open();
+                    previewDocument.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <style>${cssCode}</style>
+                            <script>
+                                // Перехват console.log
+                                const originalLog = console.log;
+                                const originalError = console.error;
+                                const originalWarn = console.warn;
+                                const originalInfo = console.info;
+                                
+                                console.log = function(...args) {
+                                    originalLog.apply(console, args);
+                                    window.parent.postMessage({ type: 'console', level: 'log', message: args.join(' ') }, '*');
+                                };
+                                
+                                console.error = function(...args) {
+                                    originalError.apply(console, args);
+                                    window.parent.postMessage({ type: 'console', level: 'error', message: args.join(' ') }, '*');
+                                };
+                                
+                                console.warn = function(...args) {
+                                    originalWarn.apply(console, args);
+                                    window.parent.postMessage({ type: 'console', level: 'warn', message: args.join(' ') }, '*');
+                                };
+                                
+                                console.info = function(...args) {
+                                    originalInfo.apply(console, args);
+                                    window.parent.postMessage({ type: 'console', level: 'info', message: args.join(' ') }, '*');
+                                };
+                                
+                                // Обработчик ошибок
+                                window.addEventListener('error', function(e) {
+                                    window.parent.postMessage({ type: 'console', level: 'error', message: e.error.stack || e.message }, '*');
+                                });
+                                
+                                window.addEventListener('unhandledrejection', function(e) {
+                                    window.parent.postMessage({ type: 'console', level: 'error', message: e.reason }, '*');
+                                });
+                            <\/script>
+                        </head>
+                        <body>
+                            ${htmlCode}
+                            <script>${jsCode}<\/script>
+                        </body>
+                        </html>
+                    `);
+                    previewDocument.close();
+                    
+                    setStatus('ready', 'Готов');
+                    showToast('Код выполнен успешно!', 'success');
+                } catch (error) {
+                    setStatus('error', 'Ошибка выполнения');
+                    showToast('Ошибка при выполнении кода: ' + error.message, 'error');
+                    logToConsole('error', error.message);
+                }
+            }
+            
+            // Планирование обновления (с задержкой)
+            function scheduleUpdate() {
+                clearTimeout(updateTimeout);
+                
+                if (currentSettings.autoSave) {
+                    saveToLocalStorage();
+                }
+                
+                updateTimeout = setTimeout(updatePreview, 1000);
+            }
+            
+            // Установка статуса
+            function setStatus(type, message) {
+                statusText.textContent = message;
+                
+                statusIndicator.classList.remove('error', 'warning');
+                if (type === 'error') {
+                    statusIndicator.classList.add('error');
+                } else if (type === 'working') {
+                    statusIndicator.classList.add('warning');
+                }
+            }
+            
+            // Показ уведомления
+            function showToast(message, type = 'success') {
+                toastMessage.textContent = message;
+                toast.className = 'toast';
+                
+                if (type === 'error') {
+                    toast.classList.add('toast-error');
+                    toast.querySelector('i').className = 'fas fa-exclamation-circle';
+                } else if (type === 'warning') {
+                    toast.classList.add('toast-warning');
+                    toast.querySelector('i').className = 'fas fa-exclamation-triangle';
+                } else if (type === 'info') {
+                    toast.classList.add('toast-info');
+                    toast.querySelector('i').className = 'fas fa-info-circle';
+                } else {
+                    toast.querySelector('i').className = 'fas fa-check-circle';
+                }
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Запись в консоль
+            function logToConsole(level, message) {
+                const messageEl = document.createElement('div');
+                messageEl.className = `console-message console-${level}`;
+                
+                const timestamp = new Date().toLocaleTimeString();
+                messageEl.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+                
+                consoleOutput.appendChild(messageEl);
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            }
+            
+            // Очистка консоли
+            function clearConsole() {
+                consoleOutput.innerHTML = '';
+            }
+            
+            // Переключение консоли
+            function toggleConsole() {
+                consoleCollapsed = !consoleCollapsed;
+                consolePanel.classList.toggle('collapsed');
+                
+                const icon = toggleConsoleBtn.querySelector('i');
+                icon.className = consoleCollapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+            }
+            
+            // Обработка скачивания
+            function handleDownload(type) {
+                try {
+                    switch(type) {
+                        case 'html':
+                            downloadFile(htmlEditor.getValue(), 'index.html', 'text/html');
+                            break;
+                        case 'css':
+                            downloadFile(cssEditor.getValue(), 'styles.css', 'text/css');
+                            break;
+                        case 'js':
+                            downloadFile(jsEditor.getValue(), 'script.js', 'text/javascript');
+                            break;
+                        case 'zip':
+                            downloadZip();
+                            break;
+                        case 'screenshot':
+                            takeScreenshot();
+                            break;
+                    }
+                    
+                    showToast('Файл успешно скачан', 'success');
+                } catch (error) {
+                    showToast('Ошибка при скачивании: ' + error.message, 'error');
+                }
+            }
+            
+            // Скачивание файла
+            function downloadFile(content, fileName, contentType) {
+                const blob = new Blob([content], { type: contentType });
+                saveAs(blob, fileName);
+            }
+            
+            // Скачивание ZIP-архива
+            function downloadZip() {
+                const zip = new JSZip();
+                
+                zip.file("index.html", htmlEditor.getValue());
+                zip.file("styles.css", cssEditor.getValue());
+                zip.file("script.js", jsEditor.getValue());
+                
+                zip.generateAsync({ type: "blob" }).then(function(content) {
+                    saveAs(content, "qwertycode-project.zip");
+                });
+            }
+            
+            // Создание скриншота
+            function takeScreenshot() {
+                setStatus('working', 'Создание скриншота...');
+                
+                html2canvas(previewFrame.contentDocument.body).then(canvas => {
+                    canvas.toBlob(blob => {
+                        saveAs(blob, 'qwertycode-screenshot.png');
+                        setStatus('ready', 'Готов');
+                        showToast('Скриншот сохранен', 'success');
+                    });
+                });
+            }
+            
+            // Сброс редакторов
+            function resetEditors() {
+                htmlEditor.setValue('');
+                cssEditor.setValue('');
+                jsEditor.setValue('');
+                updatePreview();
+            }
+            
+            // Открытие в новом окне
+            function openInNewWindow() {
+                const htmlCode = htmlEditor.getValue();
+                const cssCode = cssEditor.getValue();
+                const jsCode = jsEditor.getValue();
+                
+                const newWindow = window.open();
+                newWindow.document.open();
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>qwertyCode Результат</title>
+                        <style>${cssCode}</style>
+                    </head>
+                    <body>
+                        ${htmlCode}
+                        <script>${jsCode}<\/script>
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
+            }
+            
+            // Изменение размера
+            function startResize(e) {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                e.preventDefault();
+            }
+            
+            function resize(e) {
+                if (!isResizing) return;
+                
+                const container = document.querySelector('.main-container');
+                const editorsContainer = document.querySelector('.editors-container');
+                const previewContainer = document.querySelector('.preview-container');
+                
+                const containerRect = container.getBoundingClientRect();
+                const percentage = (e.clientX - containerRect.left) / containerRect.width * 100;
+                
+                editorsContainer.style.width = `${percentage}%`;
+                previewContainer.style.width = `${100 - percentage}%`;
+            }
+            
+            function stopResize() {
+                isResizing = false;
+                document.body.style.cursor = 'default';
+            }
+            
+            function resetResizer() {
+                const editorsContainer = document.querySelector('.editors-container');
+                const previewContainer = document.querySelector('.preview-container');
+                
+                editorsContainer.style.width = '50%';
+                previewContainer.style.width = '50%';
+            }
+            
+            // Переключение редакторов
+            function switchEditor(type) {
+                let editor;
+                
+                switch(type) {
+                    case 'html': editor = htmlEditor; break;
+                    case 'css': editor = cssEditor; break;
+                    case 'js': editor = jsEditor; break;
+                }
+                
+                editor.focus();
+            }
+            
+            // Переключение панели редактора
+            function toggleEditorPanel(panel) {
+                if (panel.classList.contains('maximized')) {
+                    panel.classList.remove('maximized');
+                    document.querySelectorAll('.editor-panel').forEach(p => {
+                        if (p !== panel) {
+                            p.classList.remove('minimized');
+                        }
+                    });
+                } else {
+                    const wasMinimized = panel.classList.contains('minimized');
+                    
+                    document.querySelectorAll('.editor-panel').forEach(p => {
+                        p.classList.remove('maximized');
+                        if (p !== panel && !wasMinimized) {
+                            p.classList.add('minimized');
+                        }
+                    });
+                    
+                    if (!wasMinimized) {
+                        panel.classList.add('maximized');
+                    } else {
+                        panel.classList.remove('minimized');
+                    }
+                }
+            }
+            
+            // Форматирование кода
+            function formatEditor(panel) {
+                let editor;
+                
+                if (panel.querySelector('#html-editor')) {
+                    editor = htmlEditor;
+                    showToast('Форматирование HTML', 'info');
+                } else if (panel.querySelector('#css-editor')) {
+                    editor = cssEditor;
+                    showToast('Форматирование CSS', 'info');
+                } else if (panel.querySelector('#js-editor')) {
+                    editor = jsEditor;
+                    showToast('Форматирование JavaScript', 'info');
+                }
+                
+                // Простое форматирование - отступы
+                const code = editor.getValue();
+                const lines = code.split('\n');
+                let indentLevel = 0;
+                let formatted = [];
+                
+                for (let line of lines) {
+                    line = line.trim();
+                    
+                    if (line.endsWith('}') || line.endsWith(']') || line.endsWith(')')) {
+                        indentLevel--;
+                    }
+                    
+                    if (line) {
+                        formatted.push('  '.repeat(indentLevel) + line);
+                    } else {
+                        formatted.push('');
+                    }
+                    
+                    if (line.endsWith('{') || line.endsWith('[') || line.endsWith('(')) {
+                        indentLevel++;
+                    }
+                }
+                
+                editor.setValue(formatted.join('\n'));
+            }
+            
+            // Настройки
+            function openSettings() {
+                loadSettingsToForm();
+                settingsModal.classList.add('active');
+            }
+            
+            function closeSettings() {
+                settingsModal.classList.remove('active');
+            }
+            
+            function saveSettings() {
+                currentSettings = {
+                    theme: editorTheme.value,
+                    fontSize: parseInt(fontSize.value),
+                    autoCompletion: autoCompletion.checked,
+                    autoSave: autoSave.checked,
+                    activeLine: activeLine.checked,
+                    lineNumbers: lineNumbers.checked,
+                    codeFolding: codeFolding.checked
+                };
+                
+                applySettings();
+                saveSettingsToStorage();
+                closeSettings();
+                
+                showToast('Настройки сохранены', 'success');
+            }
+            
+            function loadSettings() {
+                const savedSettings = localStorage.getItem('qwertyCode-settings');
+                
+                if (savedSettings) {
+                    currentSettings = JSON.parse(savedSettings);
+                } else {
+                    // Значения по умолчанию
+                    currentSettings = {
+                        theme: 'dracula',
+                        fontSize: 15,
+                        autoCompletion: true,
+                        autoSave: true,
+                        activeLine: true,
+                        lineNumbers: true,
+                        codeFolding: true
+                    };
+                }
+                
+                applySettings();
+            }
+            
+            function loadSettingsToForm() {
+                editorTheme.value = currentSettings.theme;
+                fontSize.value = currentSettings.fontSize;
+                autoCompletion.checked = currentSettings.autoCompletion;
+                autoSave.checked = currentSettings.autoSave;
+                activeLine.checked = currentSettings.activeLine;
+                lineNumbers.checked = currentSettings.lineNumbers;
+                codeFolding.checked = currentSettings.codeFolding;
+            }
+            
+            function applySettings() {
+                // Тема
+                htmlEditor.setOption('theme', currentSettings.theme);
+                cssEditor.setOption('theme', currentSettings.theme);
+                jsEditor.setOption('theme', currentSettings.theme);
+                
+                // Размер шрифта
+                htmlEditor.setOption('fontSize', currentSettings.fontSize);
+                cssEditor.setOption('fontSize', currentSettings.fontSize);
+                jsEditor.setOption('fontSize', currentSettings.fontSize);
+                
+                // Автодополнение
+                if (currentSettings.autoCompletion) {
+                    htmlEditor.setOption('extraKeys', {
+                        "Ctrl-Space": "autocomplete",
+                        "Ctrl-/": "toggleComment",
+                        "Ctrl-S": function() { saveToLocalStorage(); },
+                        "Ctrl-Enter": function() { updatePreview(); }
+                    });
+                } else {
+                    htmlEditor.setOption('extraKeys', {
+                        "Ctrl-/": "toggleComment",
+                        "Ctrl-S": function() { saveToLocalStorage(); },
+                        "Ctrl-Enter": function() { updatePreview(); }
+                    });
+                }
+                
+                // Активная линия
+                htmlEditor.setOption('styleActiveLine', currentSettings.activeLine);
+                cssEditor.setOption('styleActiveLine', currentSettings.activeLine);
+                jsEditor.setOption('styleActiveLine', currentSettings.activeLine);
+                
+                // Номера строк
+                htmlEditor.setOption('lineNumbers', currentSettings.lineNumbers);
+                cssEditor.setOption('lineNumbers', currentSettings.lineNumbers);
+                jsEditor.setOption('lineNumbers', currentSettings.lineNumbers);
+                
+                // Сворачивание кода
+                htmlEditor.setOption('foldGutter', currentSettings.codeFolding);
+                cssEditor.setOption('foldGutter', currentSettings.codeFolding);
+                jsEditor.setOption('foldGutter', currentSettings.codeFolding);
+            }
+            
+            function saveSettingsToStorage() {
+                localStorage.setItem('qwertyCode-settings', JSON.stringify(currentSettings));
+            }
+            
+            // Помощь
+            function openHelp() {
+                helpModal.classList.add('active');
+            }
+            
+            function closeHelp() {
+                helpModal.classList.remove('active');
+            }
+            
+            // Переключение темы
+            function toggleTheme() {
+                document.body.classList.toggle('light-theme');
+                
+                if (document.body.classList.contains('light-theme')) {
+                    themeBtn.querySelector('i').className = 'fas fa-sun';
+                    showToast('Светлая тема включена', 'info');
+                } else {
+                    themeBtn.querySelector('i').className = 'fas fa-moon';
+                    showToast('Тёмная тема включена', 'info');
+                }
+            }
+            
+            // Горячие клавиши
+            function handleKeyDown(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            updatePreview();
+                            break;
+                        case 's':
+                            e.preventDefault();
+                            saveToLocalStorage();
+                            showToast('Проект сохранен', 'success');
+                            break;
+                        case 'Shift+S':
+                            e.preventDefault();
+                            downloadMenu.classList.toggle('show');
+                            break;
+                    }
+                }
+            }
+            
+            // Сохранение в LocalStorage
+            function saveToLocalStorage() {
+                const code = {
+                    html: htmlEditor.getValue(),
+                    css: cssEditor.getValue(),
+                    js: jsEditor.getValue(),
+                    timestamp: new Date().getTime()
+                };
+                
+                localStorage.setItem('qwertyCode', JSON.stringify(code));
+            }
+            
+            function loadFromLocalStorage() {
+                const savedCode = localStorage.getItem('qwertyCode');
+                
+                if (savedCode) {
+                    const code = JSON.parse(savedCode);
+                    htmlEditor.setValue(code.html);
+                    cssEditor.setValue(code.css);
+                    jsEditor.setValue(code.js);
+                    
+                    const date = new Date(code.timestamp).toLocaleString('ru-RU');
+                    showToast(`Проект загружен (сохранен: ${date})`, 'info');
+                }
+            }
+            
+            // Обработчик сообщений из iframe
+            window.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'console') {
+                    logToConsole(e.data.level, e.data.message);
+                }
+            });
+            
+            // Запуск инициализации
+            init();
+        });
+    </script>
+</body>
+</html>
